@@ -1,4 +1,4 @@
-# Finance App
+# Budget Manager
 
 A Flask-based personal finance tracker for managing income, expenses, categories, and monthly budgets. The project includes OTP-based account verification and password reset, transaction filtering and CSV export, dashboard charts, and budget alerts for a simple end-to-end money management workflow.
 

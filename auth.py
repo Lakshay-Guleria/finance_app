@@ -37,7 +37,7 @@ def _send_otp_email(recipient_email, otp_code, subject, purpose_label):
     message["From"] = sender_email
     message["To"] = recipient_email
     message.set_content(
-        f"Your Finance App OTP is {otp_code}. It expires in {OTP_EXPIRY_MINUTES} minutes."
+        f"Your Budget Manager OTP is {otp_code}. It expires in {OTP_EXPIRY_MINUTES} minutes."
     )
 
     with smtplib.SMTP(smtp_host, smtp_port) as server:
@@ -52,7 +52,7 @@ def _send_signup_otp_email(recipient_email, otp_code):
     return _send_otp_email(
         recipient_email,
         otp_code,
-        "Your Finance App verification code",
+        "Your Budget Manager verification code",
         "Signup",
     )
 
@@ -61,7 +61,7 @@ def _send_password_reset_otp_email(recipient_email, otp_code):
     return _send_otp_email(
         recipient_email,
         otp_code,
-        "Your Finance App password reset code",
+        "Your Budget Manager password reset code",
         "Password reset",
     )
 
