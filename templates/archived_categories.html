@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 class="mb-4">Archived Categories</h2>
+
+<div class="mb-3">
+  <a href="{{ url_for('categories.categories') }}"
+     class="btn btn-outline-secondary btn-sm">
+    ← Back to Active
+  </a>
+</div>
+
+{% if categories %}
+
+<ul class="list-group">
+
+  {% for category in categories %}
+  <li class="list-group-item d-flex justify-content-between align-items-center">
+
+    <div>
+      <strong>{{ category.name }}</strong>
+      <br>
+      <small class="text-muted">
+        ID: {{ category.id }} | {{ category.type }}
+      </small>
+    </div>
+
+    <div class="d-flex gap-2">
+
+      <form method="POST"
+            action="{{ url_for('categories.restore_category', category_id=category.id) }}">
+        <button class="btn btn-success btn-sm">Restore</button>
+      </form>
+
+      <form method="POST"
+            action="{{ url_for('categories.permanent_delete_category', category_id=category.id) }}"
+            onsubmit="return confirm('Delete permanently?');">
+        <button class="btn btn-danger btn-sm">Delete</button>
+      </form>
+
+    </div>
+
+  </li>
+  {% endfor %}
+
+</ul>
+
+{% else %}
+
+<div class="alert alert-info">
+  No archived categories.
+</div>
+
+{% endif %}
+
+{% endblock %}

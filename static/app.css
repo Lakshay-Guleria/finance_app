@@ -1,0 +1,172 @@
+:root {
+  --app-bg: #f4f7fb;
+  --app-bg-accent: #e9eef8;
+  --app-surface: rgba(255, 255, 255, 0.88);
+  --app-surface-strong: #ffffff;
+  --app-border: rgba(39, 70, 144, 0.12);
+  --app-border-strong: rgba(39, 70, 144, 0.2);
+  --app-navy: #274690;
+  --app-navy-deep: #1d3557;
+  --app-text: #1f2a44;
+  --app-text-soft: #5f6b85; 
+  --app-success-soft: #eef8f1;
+  --app-shadow: 0 18px 40px rgba(31, 42, 68, 0.08);
+  --app-shadow-soft: 0 10px 24px rgba(39, 70, 144, 0.08);
+  --app-radius: 20px;
+}
+
+body {
+  color: var(--app-text);
+  background:
+    radial-gradient(circle at top left, rgba(81, 132, 255, 0.12), transparent 26%),
+    radial-gradient(circle at top right, rgba(39, 70, 144, 0.1), transparent 20%),
+    linear-gradient(180deg, #f7f9fd 0%, var(--app-bg) 100%);
+  font-family: "DM Sans", "Segoe UI", sans-serif;
+}
+
+.app-navbar {
+  background: linear-gradient(135deg, var(--app-navy) 0%, #3457a2 55%, #3e63b8 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 30px rgba(29, 53, 87, 0.18);
+  backdrop-filter: blur(10px);
+}
+
+.navbar-brand {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.navbar .nav-link {
+  color: rgba(255, 255, 255, 0.86) !important;
+  border-radius: 999px;
+  padding: 0.55rem 0.95rem !important;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:focus {
+  color: #fff !important;
+  background-color: rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
+}
+
+.navbar .btn-danger {
+  border-radius: 999px;
+  padding-inline: 1rem;
+  box-shadow: 0 8px 18px rgba(220, 53, 69, 0.22);
+}
+
+main.container {
+  padding-top: 0.75rem;
+  padding-bottom: 2rem;
+}
+
+h2,
+h3,
+h4,
+h5 {
+  color: var(--app-navy-deep);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.card {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius);
+  box-shadow: var(--app-shadow-soft);
+  backdrop-filter: blur(12px);
+}
+
+.card .card-body {
+  padding: 1.35rem;
+}
+
+.table {
+  --bs-table-bg: transparent;
+}
+
+.table thead.table-dark th {
+  background: linear-gradient(135deg, var(--app-navy-deep), var(--app-navy));
+  border-color: rgba(255, 255, 255, 0.08);
+  letter-spacing: 0.01em;
+}
+
+.table tbody tr {
+  border-color: rgba(39, 70, 144, 0.08);
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+  --bs-table-accent-bg: rgba(39, 70, 144, 0.03);
+}
+
+.table tbody tr:hover > * {
+  --bs-table-accent-bg: rgba(39, 70, 144, 0.06);
+}
+
+.form-control,
+.form-select {
+  border-radius: 14px;
+  border-color: var(--app-border-strong);
+  box-shadow: none;
+  min-height: 48px;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: rgba(39, 70, 144, 0.45);
+  box-shadow: 0 0 0 0.22rem rgba(39, 70, 144, 0.12);
+}
+
+.btn {
+  border-radius: 14px;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn:hover,
+.btn:focus {
+  transform: translateY(-1px);
+}
+
+.btn-primary,
+.btn-success,
+.btn-outline-primary,
+.btn-outline-secondary {
+  box-shadow: var(--app-shadow-soft);
+}
+
+.alert {
+  border: 1px solid transparent;
+  border-radius: 16px;
+  box-shadow: var(--app-shadow-soft);
+}
+
+.badge {
+  border-radius: 999px;
+  padding: 0.55em 0.8em;
+}
+
+footer {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.75), rgba(235, 240, 248, 0.9)) !important;
+  border-top-color: var(--app-border) !important;
+  backdrop-filter: blur(8px);
+}
+
+footer a {
+  transition: color 0.2s ease;
+}
+
+footer a:hover {
+  color: var(--app-navy) !important;
+}
+
+@media (max-width: 991.98px) {
+  .navbar .nav-link {
+    margin-bottom: 0.35rem;
+  }
+
+  .card .card-body {
+    padding: 1.1rem;
+  }
+}

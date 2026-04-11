@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="mb-4">Dashboard</h2>
+
+<!-- ========================
+     SUMMARY CARDS
+======================== -->
+<div class="row g-3 mb-4">
+
+  <div class="col-sm-6 col-lg-3">
+    <div class="card shadow-sm border-0 h-100">
+      <div class="card-body">
+        <p class="text-muted small mb-1">Total Income</p>
+        <h4 class="text-success mb-0">₹{{ "%.2f"|format(total_income) }}</h4>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-lg-3">
+    <div class="card shadow-sm border-0 h-100">
+      <div class="card-body">
+        <p class="text-muted small mb-1">Total Expense</p>
+        <h4 class="text-danger mb-0">₹{{ "%.2f"|format(total_expense) }}</h4>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-lg-3">
+    <div class="card shadow-sm border-0 h-100">
+      <div class="card-body">
+        <p class="text-muted small mb-1">Net Balance</p>
+        <h4 class="{{ 'text-success' if net_balance >= 0 else 'text-danger' }} mb-0">
+          ₹{{ "%.2f"|format(net_balance) }}
+        </h4>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-lg-3">
+    <div class="card shadow-sm border-0 h-100">
+      <div class="card-body">
+        <p class="text-muted small mb-1">This Month (Net)</p>
+        {% set month_net = month_income - month_expense %}
+        <h4 class="{{ 'text-success' if month_net >= 0 else 'text-danger' }} mb-0">
+          ₹{{ "%.2f"|format(month_net) }}
+        </h4>
+        <small class="text-muted">
+          In: ₹{{ "%.2f"|format(month_income) }} &nbsp;|&nbsp;
+          Out: ₹{{ "%.2f"|format(month_expense) }}
+        </small>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% if budget_alerts %}
+<div class="alert alert-danger shadow-sm mb-4">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div>
+      <h5 class="mb-1">Budget Alerts</h5>
+      <p class="mb-0">You have {{ budget_alerts|length }} budget{% if budget_alerts|length != 1 %}s{% endif %} exceeded this month.</p>
+    </div>
+    <a href="{{ url_for('budgets.budgets') }}" class="btn btn-outline-danger btn-sm">
+      View Budgets
+    </a>
+  </div>
+
+  <hr>
+
+  <div class="row g-3">
+    {% for alert in budget_alerts %}
+    <div class="col-md-6 col-lg-4">
+      <div class="border rounded bg-white p-3 h-100">
+        <h6 class="mb-2">{{ alert.category_name }}</h6>
+        <p class="mb-1 text-danger">Over by ₹{{ "%.2f"|format(alert.over_by) }}</p>
+        <small class="text-muted">
+          Spent: ₹{{ "%.2f"|format(alert.total_spent) }} |
+          Limit: ₹{{ "%.2f"|format(alert.limit_amount) }}
+        </small>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+
+<!-- ========================
+     CHARTS ROW
+======================== -->
+<div class="row g-4 mb-4">
+
+  <!-- Bar Chart: Income vs Expense (Last 6 Months) -->
+  <div class="col-lg-7">
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <h5 class="card-title mb-3">Income vs Expense — Last 6 Months</h5>
+        <canvas id="barChart" height="120"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pie Chart: Expense Breakdown This Month -->
+  <div class="col-lg-5">
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <h5 class="card-title mb-3">Expense Breakdown — This Month</h5>
+        {% if pie_data and pie_data|sum > 0 %}
+          <canvas id="pieChart" height="180"></canvas>
+        {% else %}
+          <div class="text-center text-muted py-5">
+            <p>No expense data this month.</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ========================
+     QUICK LINKS
+======================== -->
+<div class="row g-3">
+  <div class="col-auto">
+    <a href="{{ url_for('transactions.create_transaction') }}" class="btn btn-success">
+      + Add Transaction
+    </a>
+  </div>
+  <div class="col-auto">
+    <a href="{{ url_for('budgets.create_budget') }}" class="btn btn-outline-primary">
+      + Create Budget
+    </a>
+  </div>
+  <div class="col-auto">
+    <a href="{{ url_for('transactions.transactions') }}" class="btn btn-outline-secondary">
+      View All Transactions
+    </a>
+  </div>
+</div>
+
+
+<!-- ========================
+     CHART.JS
+======================== -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script> -->
+<script>
+  const barChartElement = document.getElementById('barChart');
+  const barChartLabels = {{ chart_labels | tojson }};
+  const barChartIncomeData = {{ chart_income | tojson }};
+  const barChartExpenseData = {{ chart_expense | tojson }};
+
+  const barChartData = {
+    labels: barChartLabels,
+    datasets: [
+      {
+        label: 'Income',
+        data: barChartIncomeData,
+        backgroundColor: 'rgba(25, 135, 84, 0.75)',
+        borderRadius: 4,
+      },
+      {
+        label: 'Expense',
+        data: barChartExpenseData,
+        backgroundColor: 'rgba(220, 53, 69, 0.75)',
+        borderRadius: 4,
+      }
+    ]
+  };
+
+  const barChartConfig = {
+    type: 'bar',
+    data: barChartData,
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'top' },
+        tooltip: {
+          callbacks: {
+            label: ctx => ' ₹' + ctx.parsed.y.toFixed(2)
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: val => '₹' + val
+          }
+        }
+      }
+    }
+  };
+
+  const barChartContext = barChartElement.getContext('2d');
+  const barChart = new Chart(barChartContext, barChartConfig);
+
+  {% if pie_data and pie_data|sum > 0 %}
+  const pieChartElement = document.getElementById('pieChart');
+  const pieChartLabels = {{ pie_labels | tojson }};
+  const pieChartValues = {{ pie_data | tojson }};
+
+  const pieChartData = {
+    labels: pieChartLabels,
+    datasets: [{
+      data: pieChartValues,
+      backgroundColor: [
+        '#dc3545', '#fd7e14', '#ffc107',
+        '#198754', '#0d6efd', '#6f42c1'
+      ],
+      borderWidth: 2,
+    }]
+  };
+
+  const pieChartConfig = {
+    type: 'doughnut',
+    data: pieChartData,
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom' },
+        tooltip: {
+          callbacks: {
+            label: ctx => ' ₹' + ctx.parsed.toFixed(2)
+          }
+        }
+      }
+    }
+  };
+
+  const pieChartContext = pieChartElement.getContext('2d');
+  const pieChart = new Chart(pieChartContext, pieChartConfig);
+  {% endif %}
+</script>
+
+{% endblock %}

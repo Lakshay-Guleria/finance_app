@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="mb-4">Create Transaction</h2>
+
+{% if categories %}
+
+<div class="card shadow-sm p-4" style="max-width: 500px;">
+
+  <form method="POST">
+
+    <!-- Category -->
+    <div class="mb-3">
+      <label class="form-label">Category</label>
+      <select name="category_id" class="form-select" required>
+        {% for category in categories %}
+          <option value="{{ category.id }}">
+            {{ category.name }} ({{ category.type }})
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Amount -->
+    <div class="mb-3">
+      <label class="form-label">Amount</label>
+      <input type="number" step="0.01" name="amount"
+             class="form-control" placeholder="Enter amount" required>
+    </div>
+
+    <!-- Date -->
+    <div class="mb-3">
+      <label class="form-label">Date</label>
+      <input type="date" name="date"
+             class="form-control" required>
+    </div>
+
+    <!-- Description -->
+    <div class="mb-3">
+      <label class="form-label">Description</label>
+      <input type="text" name="description"
+             class="form-control" placeholder="Optional">
+    </div>
+
+    <!-- Buttons -->
+    <div class="d-flex justify-content-between">
+
+      <a href="{{ url_for('transactions.transactions') }}"
+         class="btn btn-secondary">
+        Cancel
+      </a>
+
+      <button type="submit" class="btn btn-success">
+        Add Transaction
+      </button>
+
+    </div>
+
+  </form>
+
+</div>
+
+{% else %}
+
+<div class="alert alert-warning">
+  No categories found.
+</div>
+
+<a href="{{ url_for('categories.create_category') }}"
+   class="btn btn-primary mt-2">
+  Create Category
+</a>
+
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row justify-content-center">
+  <div class="col-md-5">
+
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+
+        <h3 class="mb-3 text-center">Verify Email OTP</h3>
+        <p class="text-muted text-center">
+          Enter the 6-digit code sent to <strong>{{ pending_email }}</strong>.
+        </p>
+
+        <form method="POST">
+          <div class="mb-4">
+            <label class="form-label">OTP Code</label>
+            <input
+              type="text"
+              name="otp_code"
+              maxlength="6"
+              class="form-control"
+              placeholder="Enter 6-digit OTP"
+              required
+            >
+          </div>
+
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary">Verify Account</button>
+          </div>
+        </form>
+
+        <form method="POST" action="{{ url_for('auth.resend_signup_otp') }}" class="mt-3">
+          <div class="d-grid gap-2">
+            <button class="btn btn-outline-secondary">Resend OTP</button>
+            <a href="{{ url_for('auth.create_user') }}" class="btn btn-outline-secondary">
+              Back to Register
+            </a>
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

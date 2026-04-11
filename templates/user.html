@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="mb-4">User Profile</h2>
+
+<div class="card shadow-sm p-4" style="max-width: 500px;">
+
+  <h4 class="mb-3">{{ user.name }}</h4>
+
+  <p class="mb-2">
+    <strong>Email:</strong> {{ user.email }}
+  </p>
+
+  <p class="mb-3 text-muted">
+    Member Since: {{ user.created_at }}
+  </p>
+
+  <hr>
+
+  <a href="{{ url_for('dashboard.dashboard') }}"
+     class="btn btn-secondary btn-sm">
+    Back to Dashboard
+  </a>
+
+</div>
+
+{% endblock %}

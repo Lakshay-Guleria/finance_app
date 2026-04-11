@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Finance App</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+
+  <body class="d-flex flex-column min-vh-100">
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark app-navbar sticky-top shadow-sm">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('dashboard.dashboard') }}">
+          Finance App
+        </a>
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            {% if session.get('user_id') %}
+
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('dashboard.dashboard') }}"
+                >Home</a
+              >
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('categories.categories') }}"
+                >Categories</a
+              >
+            </li>
+
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                href="{{ url_for('transactions.transactions') }}"
+                >Transactions</a
+              >
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('budgets.budgets') }}"
+                >Budgets</a
+              >
+            </li>
+
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                href="{{ url_for('get_user', user_id=session['user_id']) }}"
+                >Profile</a
+              >
+            </li>
+
+            {% else %}
+
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('auth.create_user') }}"
+                >Register</a
+              >
+            </li>
+
+            {% endif %}
+          </ul>
+
+          {% if session.get('user_id') %}
+          <ul class="navbar-nav ms-lg-auto mb-2 mb-lg-0">
+            <li class="nav-item d-flex align-items-center">
+              <form action="{{ url_for('auth.logout') }}" method="POST" class="m-0">
+                <button type="submit" class="btn btn-danger btn-sm">
+                  Logout
+                </button>
+              </form>
+            </li>
+          </ul>
+          {% endif %}
+        </div>
+      </div>
+    </nav>
+
+    <!-- CONTENT -->
+    <main class="container mt-4 flex-grow-1">
+      <!-- Flash Messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %} {% for category, message in messages %}
+      <div class="alert alert-{{ 'danger' if category == 'error' else category }}">
+        {{ message }}
+      </div>
+      {% endfor %} {% endif %} {% endwith %} {% block content %}{% endblock %}
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-light border-top mt-5 py-4">
+      <div class="container">
+        <div class="row gy-3 align-items-center">
+          <div class="col-md-4">
+            <h6 class="mb-1">Finance App</h6>
+            <p class="text-muted mb-0">
+              Smart budgeting, expense tracking, and simple money management.
+            </p>
+          </div>
+          <div class="col-md-4">
+            <h6 class="mb-2">Quick Links</h6>
+            <div class="d-flex flex-wrap gap-3">
+              <a class="link-secondary text-decoration-none" href="{{ url_for('dashboard.dashboard') }}">
+                Dashboard
+              </a>
+              <a class="link-secondary text-decoration-none" href="{{ url_for('transactions.transactions') }}">
+                Transactions
+              </a>
+              <a class="link-secondary text-decoration-none" href="{{ url_for('budgets.budgets') }}">
+                Budgets
+              </a>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <h6 class="mb-2">Support</h6>
+            <div class="d-flex flex-column gap-1">
+              <a class="link-secondary text-decoration-none" href="mailto:lakshayguleria123@gmail.com">
+                Contact Us
+              </a>
+              <a class="link-secondary text-decoration-none" href="#">
+                Privacy Policy
+              </a>
+              <a class="link-secondary text-decoration-none" href="#">
+                Terms of Service
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="border-top mt-4 pt-3 text-center text-muted small">
+          &copy; 2026 Finance App. All rights reserved.
+        </div>
+      </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      document.querySelectorAll(".password-toggle").forEach((button) => {
+        button.addEventListener("click", () => {
+          const targetId = button.dataset.target;
+          const passwordInput = document.getElementById(targetId);
+
+          if (!passwordInput) {
+            return;
+          }
+
+          const showingPassword = passwordInput.type === "text";
+          passwordInput.type = showingPassword ? "password" : "text";
+          button.textContent = showingPassword ? "Show" : "Hide";
+          button.setAttribute(
+            "aria-label",
+            showingPassword ? "Show password" : "Hide password"
+          );
+        });
+      });
+    </script>
+  </body>
+</html>
