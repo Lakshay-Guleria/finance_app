@@ -18,6 +18,19 @@ def _is_future_transaction_date(transaction_date):
     return parsed_date > date.today()
 
 
+def _build_pagination_pages(current_page, total_pages, window_size=3):
+    if total_pages <= 2:
+        return []
+
+    start_page = current_page if current_page > 1 else 2
+    end_page = min(total_pages - 1, start_page + window_size - 1)
+
+    if end_page - start_page + 1 < window_size:
+        start_page = max(2, end_page - window_size + 1)
+
+    return list(range(start_page, end_page + 1))
+
+
 def _get_filtered_transactions_data(current_user_id):
     per_page = 10
     page = request.args.get("page", type=int) or 1
@@ -140,6 +153,8 @@ def _get_filtered_transactions_data(current_user_id):
     if page > total_pages:
         page = total_pages
 
+    pagination_pages = _build_pagination_pages(page, total_pages)
+
     start_index = (page - 1) * per_page
     end_index = start_index + per_page
     transactions_list = all_transactions[start_index:end_index]
@@ -171,6 +186,7 @@ def _get_filtered_transactions_data(current_user_id):
         "per_page": per_page,
         "total_transactions": total_transactions,
         "total_pages": total_pages,
+        "pagination_pages": pagination_pages,
         "has_previous_page": page > 1,
         "has_next_page": page < total_pages,
         "row_number_start": start_index + 1,
@@ -206,6 +222,7 @@ def transactions():
         per_page=transaction_data["per_page"],
         total_transactions=transaction_data["total_transactions"],
         total_pages=transaction_data["total_pages"],
+        pagination_pages=transaction_data["pagination_pages"],
         has_previous_page=transaction_data["has_previous_page"],
         has_next_page=transaction_data["has_next_page"],
         row_number_start=transaction_data["row_number_start"],

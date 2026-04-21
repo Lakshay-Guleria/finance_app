@@ -203,43 +203,57 @@
 
 </div>
 
-<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3">
-  <a
-    href="{{ url_for(
-      'transactions.transactions',
-      page=page - 1,
-      category_id=selected_category_id,
-      type=selected_type,
-      q=search_query,
-      start_date=start_date,
-      end_date=end_date,
-      min_amount=min_amount,
-      max_amount=max_amount
-    ) }}"
-    class="btn btn-outline-secondary {% if not has_previous_page %}disabled{% endif %}"
-    {% if not has_previous_page %}aria-disabled="true"{% endif %}
-  >
-    Previous
-  </a>
+{% macro pagination_url(target_page) -%}
+  {{ url_for(
+    'transactions.transactions',
+    page=target_page,
+    category_id=selected_category_id,
+    type=selected_type,
+    q=search_query,
+    start_date=start_date,
+    end_date=end_date,
+    min_amount=min_amount,
+    max_amount=max_amount
+  ) }}
+{%- endmacro %}
 
-  <a
-    href="{{ url_for(
-      'transactions.transactions',
-      page=page + 1,
-      category_id=selected_category_id,
-      type=selected_type,
-      q=search_query,
-      start_date=start_date,
-      end_date=end_date,
-      min_amount=min_amount,
-      max_amount=max_amount
-    ) }}"
-    class="btn btn-outline-secondary {% if not has_next_page %}disabled{% endif %}"
-    {% if not has_next_page %}aria-disabled="true"{% endif %}
-  >
-    Next
-  </a>
-</div>
+{% if total_pages > 1 %}
+<nav class="mt-3" aria-label="Transaction pages">
+  <ul class="pagination justify-content-center flex-wrap gap-1 mb-0">
+    <li class="page-item {% if page == 1 %}active{% endif %}">
+      <a
+        class="page-link"
+        href="{{ pagination_url(1) }}"
+        {% if page == 1 %}aria-current="page"{% endif %}
+      >
+        First
+      </a>
+    </li>
+
+    {% for page_number in pagination_pages %}
+    <li class="page-item {% if page_number == page %}active{% endif %}">
+      <a
+        class="page-link"
+        href="{{ pagination_url(page_number) }}"
+        {% if page_number == page %}aria-current="page"{% endif %}
+      >
+        {{ page_number }}
+      </a>
+    </li>
+    {% endfor %}
+
+    <li class="page-item {% if page == total_pages %}active{% endif %}">
+      <a
+        class="page-link"
+        href="{{ pagination_url(total_pages) }}"
+        {% if page == total_pages %}aria-current="page"{% endif %}
+      >
+        Last
+      </a>
+    </li>
+  </ul>
+</nav>
+{% endif %}
 
 {% else %}
 
