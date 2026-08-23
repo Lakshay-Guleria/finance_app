@@ -1,9 +1,10 @@
 import os
 import secrets
-import smtplib
+# import smtplib
+import requests
 import sqlite3
 from datetime import datetime, timedelta
-from email.message import EmailMessage
+# from email.message import EmailMessage
 from functools import wraps
 
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
@@ -22,30 +23,32 @@ def _generate_otp():
 
 
 def _send_otp_email(recipient_email, otp_code, subject, purpose_label):
-    smtp_host = os.getenv("SMTP_HOST")
-    smtp_port = int(os.getenv("SMTP_PORT", "587"))
-    smtp_username = os.getenv("SMTP_USERNAME")
-    smtp_password = os.getenv("SMTP_PASSWORD")
-    sender_email = os.getenv("SMTP_FROM_EMAIL") or smtp_username
+    api_key = os.getenv("BREVO_API_KEY")
+    sender_email = os.getenv("BREVO_SENDER_EMAIL")
 
-    if not all([smtp_host, smtp_username, smtp_password, sender_email]):
+    if not all([api_key, sender_email]):
         print(f"[OTP DEBUG] {purpose_label} OTP for {recipient_email}: {otp_code}")
         return False
 
-    message = EmailMessage()
-    message["Subject"] = subject
-    message["From"] = sender_email
-    message["To"] = recipient_email
-    message.set_content(
-        f"Your Budget Manager OTP is {otp_code}. It expires in {OTP_EXPIRY_MINUTES} minutes."
-    )
+    url = "https://api.brevo.com/v3/smtp/email"
+    headers = {
+        "accept": "application/json",
+        "api-key": api_key,
+        "content-type": "application/json",
+    }
+    payload = {
+        "sender": {"name": "Budget Manager", "email": sender_email},
+        "to": [{"email": recipient_email}],
+        "subject": subject,
+        "textContent": f"Your Budget Manager OTP is {otp_code}. It expires in {OTP_EXPIRY_MINUTES} minutes.",
+    }
 
-    with smtplib.SMTP(smtp_host, smtp_port) as server:
-        server.starttls()
-        server.login(smtp_username, smtp_password)
-        server.send_message(message)
-
-    return True
+    try:
+        response = requests.post(url, json=payload, headers=headers, timeout=10)
+        return response.status_code == 201
+    except requests.RequestException as e:
+        print(f"[OTP ERROR] Failed to send email: {e}")
+        return False
 
 
 def _send_signup_otp_email(recipient_email, otp_code):
