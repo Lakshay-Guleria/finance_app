@@ -9,9 +9,7 @@ from transactions import transactions_bp
 from budgets import budgets_bp
 from dashboard import dashboard_bp
 
-@app.route("/")
-def home():
-    return redirect(url_for("auth.login"))
+
 
 def _load_local_env(env_path=".env"):
     if not os.path.exists(env_path):
@@ -42,6 +40,10 @@ if not app.secret_key:
     raise RuntimeError(
         "FLASK_SECRET_KEY is not set. Add it to your .env file or environment variables."
     )
+
+@app.route("/")
+def home():
+    return redirect(url_for("auth.login"))
 
 app.register_blueprint(auth)
 app.register_blueprint(categories_bp)
