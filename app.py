@@ -41,9 +41,6 @@ if not app.secret_key:
         "FLASK_SECRET_KEY is not set. Add it to your .env file or environment variables."
     )
 
-@app.route("/")
-def home():
-    return redirect(url_for("auth.login"))
 
 app.register_blueprint(auth)
 app.register_blueprint(categories_bp)
