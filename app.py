@@ -1,5 +1,5 @@
 import os
-
+from db import init_db
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 
 from db import get_db_connection
@@ -32,6 +32,7 @@ def _load_local_env(env_path=".env"):
 _load_local_env()
 
 app = Flask(__name__)
+init_db()
 app.secret_key = os.getenv("FLASK_SECRET_KEY")
 
 if not app.secret_key:
