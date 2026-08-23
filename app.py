@@ -9,6 +9,9 @@ from transactions import transactions_bp
 from budgets import budgets_bp
 from dashboard import dashboard_bp
 
+@app.route("/")
+def home():
+    return redirect(url_for("auth.login"))
 
 def _load_local_env(env_path=".env"):
     if not os.path.exists(env_path):
