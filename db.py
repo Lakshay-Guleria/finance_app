@@ -142,7 +142,7 @@ def init_db():
             (name, email, password_hash, created_at, is_active)
             VALUES (?, ?, ?, ?, ?)
         """, (
-            "Recruiter Demo",
+            "Demo Account",
             DEMO_EMAIL,
             password_hash,
             "2026-08-01",
